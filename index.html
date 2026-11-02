@@ -1,24 +1,58 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>김포페이 연결 중</title>
-  <script>
-    window.onload = function() {
-      // 1. 김포페이 앱 직접 실행 시도
-      window.location.href = "intent://#Intent;scheme=gimpopay;package=gov.gimpo.gpay;end";
-      
-      // 2. 앱이 설치되어 있지 않거나 열리지 않을 경우를 대비한 플레이스토어 백업 링크
-      setTimeout(function() {
-        window.location.href = "https://play.google.com/store/apps/details?id=gov.gimpo.gpay";
-      }, 1000);
-    };
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>김포페이 앱 열기</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+           display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0; }
+    .box { text-align:center; padding:24px; }
+    a.btn { display:inline-block; margin-top:16px; padding:14px 22px;
+            background:#0b7cff; color:#fff; text-decoration:none;
+            border-radius:10px; font-weight:700; }
+    p { color:#555; }
+  </style>
 </head>
-<body style="text-align: center; padding-top: 50px; font-family: sans-serif;">
-  <h3>김포페이 앱으로 연결 중입니다...</h3>
-  <p>잠시만 기다려주세요.</p>
-  <p><a href="https://play.google.com/store/apps/details?id=gov.gimpo.gpay">앱이 자동으로 열리지 않으면 여기를 누르세요.</a></p>
+<body>
+  <div class="box">
+    <h1>김포페이</h1>
+    <p>아래 버튼을 눌러 앱을 실행해 주세요.</p>
+
+    <a id="openApp" class="btn" href="#">김포페이 앱 열기</a>
+    <p><a id="storeLink" href="https://play.google.com/store/apps/details?id=gov.gimpo.gpay&hl=ko">
+      앱이 열리지 않으면 설치하기
+    </a></p>
+  </div>
+
+  <script>
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const playStore = "https://play.google.com/store/apps/details?id=gov.gimpo.gpay&hl=ko";
+    const appStore = "https://apps.apple.com/kr/app/%EA%B9%80%ED%8F%AC%ED%8E%98%EC%9D%B4/id1614368625";
+
+    const storeLink = document.getElementById("storeLink");
+    const openApp = document.getElementById("openApp");
+
+    if (isIOS) {
+      storeLink.href = appStore;
+      openApp.href = appStore;
+      openApp.textContent = "김포페이 앱 설치하기";
+    } else if (isAndroid) {
+      const intentUrl =
+        "intent://#Intent;" +
+        "scheme=gimpopay;" +
+        "package=gov.gimpo.gpay;" +
+        "S.browser_fallback_url=" + encodeURIComponent(playStore) + ";" +
+        "end";
+
+      openApp.href = intentUrl;
+      storeLink.href = playStore;
+    } else {
+      openApp.href = playStore;
+      openApp.textContent = "김포페이 설치 페이지 열기";
+      storeLink.style.display = "none";
+    }
+  </script>
 </body>
 </html>
